@@ -16,9 +16,10 @@ export default function Home() {
           <Image
             src={camera_photo}
             alt="Headshot"
-            width={300}
-            height={300}
+            width={400}
+            height={400}
             priority
+            className="rounded-md transition-transform duration-300 hover:scale-105"
           />
         </div>
       </div>
