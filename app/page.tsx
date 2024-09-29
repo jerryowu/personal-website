@@ -9,8 +9,8 @@ import { useState } from "react";
 
 export default function Home() {
   const [imageStack, setImageStack] = useState([
-    camera_photo,
     headshot,
+    camera_photo,
     spikey,
     bread,
   ]);
@@ -66,8 +66,8 @@ export default function Home() {
               className={`absolute top-0 left-0 rounded-md transition-all duration-300 ease-in-out ${
                 "animatingOut" in image && image.animatingOut
                   ? animationDirection === "right"
-                    ? "translate-x-1/2 rotate-[15deg]"
-                    : "-translate-x-1/2 rotate-[-15deg]"
+                    ? "translate-x-full rotate-[30deg] z-[1]"
+                    : "-translate-x-full rotate-[-30deg] z-[1]"
                   : `${
                       index === imageStack.length - 1
                         ? "rotate-0"
