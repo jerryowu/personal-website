@@ -10,7 +10,10 @@ export default function Build() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === "jerry" && password === "password") {
+    if (
+      username === process.env.NEXT_PUBLIC_LOGIN_USERNAME &&
+      password === process.env.NEXT_PUBLIC_LOGIN_PASSWORD
+    ) {
       setIsLoggedIn(true);
       setIsUsernameError(false);
       setIsPasswordError(false);

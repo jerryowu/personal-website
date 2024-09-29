@@ -4,6 +4,7 @@ import Image from "next/image";
 import camera_photo from "/public/camera.jpg";
 import headshot from "/public/headshot.jpg";
 import spikey from "/public/spikey.jpg";
+import bread from "/public/bread.jpg";
 import { useState } from "react";
 
 export default function Home() {
@@ -11,43 +12,79 @@ export default function Home() {
     camera_photo,
     headshot,
     spikey,
+    bread,
   ]);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animationDirection, setAnimationDirection] = useState("right");
 
   const handleImageClick = () => {
-    const newImageStack = [...imageStack.slice(1), imageStack[0]];
-    setImageStack(newImageStack);
+    if (isAnimating) return;
+    setIsAnimating(true);
+
+    const newDirection = Math.random() < 0.5 ? "left" : "right";
+    setAnimationDirection(newDirection);
+
+    requestAnimationFrame(() => {
+      setImageStack((prevStack) => [
+        ...prevStack.slice(1),
+        { ...prevStack[0], animatingOut: true },
+      ]);
+
+      setTimeout(() => {
+        setImageStack((prevStack) => [
+          ...prevStack.slice(0, -1),
+          {
+            ...prevStack[prevStack.length - 1],
+            animatingOut: false,
+          },
+        ]);
+        setIsAnimating(false);
+      }, 300);
+    });
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="px-60 pt-10">
-        <div className="flex items-center justify-between">
-          <p className="flex-1">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            atdoloribus optio, nobis dolorum, odio quas pariatur dolore iste,
-            similique nihil facilis sunt? Optio eos numquam sit, maxime
-            excepturi nemo.
-          </p>
-          <div className="relative w-[400px] h-[400px]">
-            {imageStack
-              .slice()
-              .reverse()
-              .map((image, index) => (
-                <Image
-                  key={imageStack.length - 1 - index}
-                  src={image}
-                  alt={`image-${imageStack.length - 1 - index}`}
-                  width={400}
-                  height={400}
-                  priority
-                  className={`absolute top-0 left-0 rounded-md rotate-${
-                    (imageStack.length - 1 - index) * 3
-                  }`}
-                  onClick={() => handleImageClick()}
-                />
-              ))}
-          </div>
-        </div>
+    <main className="flex h-100 flex-row items-center justify-between p-16">
+      <p className="w-1/2 pl-20">
+        Hi! I&apos;m Jerry. I&apos;m a 4th year undergraduate student studying
+        computer science at UC Davis. I am interested in full stack development
+        and design.
+      </p>
+      <div className="relative w-[400px] h-[400px] mr-40">
+        {imageStack
+          .slice()
+          .reverse()
+          .map((image, index) => (
+            <Image
+              key={index}
+              src={image}
+              alt={`image-${index}`}
+              width={400}
+              height={400}
+              priority
+              draggable={false}
+              className={`absolute top-0 left-0 rounded-md transition-all duration-300 ease-in-out ${
+                "animatingOut" in image && image.animatingOut
+                  ? animationDirection === "right"
+                    ? "translate-x-1/2 rotate-[15deg]"
+                    : "-translate-x-1/2 rotate-[-15deg]"
+                  : `${
+                      index === imageStack.length - 1
+                        ? "rotate-0"
+                        : index === imageStack.length - 2
+                        ? "rotate-6"
+                        : index === imageStack.length - 3
+                        ? "rotate-3"
+                        : "-rotate-6"
+                    } ${
+                      index === imageStack.length - 1
+                        ? "scale-100"
+                        : `scale-${95 + (imageStack.length - index - 1) * 2}`
+                    }`
+              }`}
+              onClick={handleImageClick}
+            />
+          ))}
       </div>
     </main>
   );
