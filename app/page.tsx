@@ -45,10 +45,10 @@ export default function Home() {
 
   return (
     <main className="flex h-100 flex-row items-center justify-between p-16">
-      <p className="w-1/2 pl-20">
+      <p className="w-1/2 pl-20 text-xl">
         Hi! I&apos;m Jerry. I&apos;m a 4th year undergraduate student studying
         computer science at UC Davis. I am interested in full stack development
-        and design.
+        and UI/UX design.
       </p>
       <div className="relative w-[400px] h-[400px] mr-40">
         {imageStack
