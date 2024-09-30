@@ -49,7 +49,7 @@ function ReadingContent() {
       }).then((res) => res.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
-      setNewBook({ title: "", author: "", status: "readingList" });
+      setNewBook({ title: "", author: "", status: newBook.status });
     },
   });
 
@@ -196,7 +196,7 @@ function ReadingContent() {
                 onChange={(e) =>
                   setNewBook({ ...newBook, title: e.target.value })
                 }
-                className="flex-grow p-2 rounded border border-[#d79921]"
+                className="flex-grow p-2 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] placeholder-[#7c6f64] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
                 required
               />
               <input
@@ -206,7 +206,7 @@ function ReadingContent() {
                 onChange={(e) =>
                   setNewBook({ ...newBook, author: e.target.value })
                 }
-                className="flex-grow p-2 rounded border border-[#d79921]"
+                className="flex-grow p-2 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] placeholder-[#7c6f64] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
                 required
               />
               <select
@@ -214,7 +214,7 @@ function ReadingContent() {
                 onChange={(e) =>
                   setNewBook({ ...newBook, status: e.target.value })
                 }
-                className="p-2 rounded border border-[#d79921]"
+                className="p-2 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
               >
                 <option value="readingList">Reading List</option>
                 <option value="currentlyReading">Currently Reading</option>
