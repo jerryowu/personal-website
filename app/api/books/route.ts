@@ -14,3 +14,20 @@ export async function GET(request: Request) {
 
   return NextResponse.json(books);
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const newBook = await prisma.book.create({
+      data: {
+        title: body.title,
+        author: body.author,
+        status: body.status,
+      },
+    });
+    return NextResponse.json(newBook, { status: 201 });
+  } catch (error) {
+    console.error("Error creating book:", error);
+    return NextResponse.json({ error: "Error creating book" }, { status: 500 });
+  }
+}
