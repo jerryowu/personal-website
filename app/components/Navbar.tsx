@@ -39,12 +39,12 @@ export default function Navbar() {
         </Link>
         <div className="mr-20 mt-10 flex space-x-20">
           <Link
-            href="/about"
+            href="/fun"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
-              pathname === "/about" ? "underline scale-105" : ""
+              pathname === "/fun" ? "underline scale-105" : ""
             }`}
           >
-            About
+            Fun
           </Link>
           <Link
             href="/resume"
