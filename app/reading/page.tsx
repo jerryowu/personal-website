@@ -30,6 +30,7 @@ function ReadingContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const loginFormRef = useRef<HTMLDivElement>(null);
+  const [editingBook, setEditingBook] = useState<number | null>(null);
 
   const {
     data: books,
@@ -61,6 +62,24 @@ function ReadingContent() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
   });
 
+  const editBookMutation = useMutation({
+    mutationFn: (updatedBook: {
+      id: number;
+      title: string;
+      author: string;
+      status: string;
+    }) =>
+      fetch(`/api/books/${updatedBook.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedBook),
+      }).then((res) => res.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+      setEditingBook(null);
+    },
+  });
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -84,7 +103,7 @@ function ReadingContent() {
     title: string;
     books: { id: number; title: string; author: string; status: string }[];
   }) => (
-    <div className="bg-gradient-to-br from-[#fbf1c7] to-[#f2e5bc] shadow-lg rounded-lg p-6 mb-8 w-full max-w-2xl mx-auto transition-all duration-300 hover:shadow-xl">
+    <div className="bg-gradient-to-br from-[#fbf1c7] to-[#f2e5bc] shadow-lg rounded-lg p-6 mb-8 w-full max-w-4xl mx-auto transition-all duration-300 hover:shadow-xl">
       <h2 className="text-2xl font-semibold mb-6 text-[#b57614] text-center border-b-2 border-[#d79921] pb-2">
         {title}
       </h2>
@@ -94,21 +113,67 @@ function ReadingContent() {
             key={book.id}
             className="bg-[#ebdbb2] p-4 rounded-md transition-all duration-300 hover:shadow-md hover:bg-[#d5c4a1] flex items-center justify-between"
           >
-            <div>
-              <span className="font-semibold text-lg text-[#3c3836]">
-                {book.title}
-              </span>
-              <p className="text-[#504945] mt-1 italic">by {book.author}</p>
-            </div>
-            {isLoggedIn && (
-              <div>
+            {editingBook === book.id ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  editBookMutation.mutate({
+                    id: book.id,
+                    title: (e.target as any).title.value,
+                    author: (e.target as any).author.value,
+                    status: book.status,
+                  });
+                }}
+                className="flex-grow flex items-center space-x-2"
+              >
+                <input
+                  name="title"
+                  defaultValue={book.title}
+                  className="flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
+                />
+                <input
+                  name="author"
+                  defaultValue={book.author}
+                  className="flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
+                />
                 <button
-                  onClick={() => deleteBookMutation.mutate(book.id)}
-                  className="px-2 py-1 bg-[#fb4934] text-[#282828] rounded hover:bg-[#cc241d]"
+                  type="submit"
+                  className="px-2 py-1 bg-[#98971a] text-white rounded hover:bg-[#79740e]"
                 >
-                  Delete
+                  Save
                 </button>
-              </div>
+                <button
+                  onClick={() => setEditingBook(null)}
+                  className="px-2 py-1 bg-[#d79921] text-white rounded hover:bg-[#b57614]"
+                >
+                  Cancel
+                </button>
+              </form>
+            ) : (
+              <>
+                <div>
+                  <span className="font-semibold text-lg text-[#3c3836]">
+                    {book.title}
+                  </span>
+                  <p className="text-[#504945] mt-1 italic">by {book.author}</p>
+                </div>
+                {isLoggedIn && (
+                  <div>
+                    <button
+                      onClick={() => setEditingBook(book.id)}
+                      className="px-2 py-1 bg-[#d79921] text-white rounded hover:bg-[#b57614] mr-2"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteBookMutation.mutate(book.id)}
+                      className="px-2 py-1 bg-[#fb4934] text-[#282828] rounded hover:bg-[#cc241d]"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </li>
         ))}

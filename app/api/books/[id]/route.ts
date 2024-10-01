@@ -25,3 +25,21 @@ export async function DELETE(
     );
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+    const updatedBook = await prisma.book.update({
+      where: { id: body.id },
+      data: {
+        title: body.title,
+        author: body.author,
+        status: body.status,
+      },
+    });
+    return NextResponse.json(updatedBook, { status: 200 });
+  } catch (error) {
+    console.error("Error updating book:", error);
+    return NextResponse.json({ error: "Error updating book" }, { status: 500 });
+  }
+}
