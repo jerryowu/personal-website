@@ -22,23 +22,27 @@ export default function Fun() {
 
   return (
     <main className="flex h-100 flex-col items-center justify-between p-16">
-      <div className="flex flex-row pb-16">
-        <p className="w-1/2 pl-10 text-xl flex items-center">
+      <div className="flex flex-row pb-16 w-full">
+        <p className="w-1/2 pr-8 text-xl flex items-center">
           There&apos;s something unparalleled about being immersed in nature,
           disconnected from technology, surrounded by fresh powder and snow
           covered pines. The experience of carving down the mountain with
           friends, all while enjoying a simple pocket sandwich, is truly
           amazing.
         </p>
-        <div className="relative ml-auto w-[400px] h-[300px] mr-64">
-          <ImageStack images={snowboardImages} />
+        <div className="w-1/2 flex justify-center">
+          <div className="relative w-[400px] h-[300px]">
+            <ImageStack images={snowboardImages} />
+          </div>
         </div>
       </div>
-      <div className="flex flex-row">
-        <div className="relative ml-auto w-[400px] h-[300px] mr-64">
-          <ImageStack images={foodImages} />
+      <div className="flex flex-row w-full">
+        <div className="w-1/2 flex justify-center">
+          <div className="relative w-[400px] h-[300px]">
+            <ImageStack images={foodImages} />
+          </div>
         </div>
-        <p className="w-1/2 pl-10 text-xl flex items-center">
+        <p className="w-1/2 pl-8 text-xl flex items-center">
           Weightlifting is one of my favorite hobbies. It&apos;s a great way for
           me to unwind, and I&apos;ve made some of my closest friends at the
           gym. Rather than sharing lifting photos here, I thought I&apos;d post
