@@ -7,6 +7,8 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { LoginForm } from "../components/LoginForm";
+import Image from "next/image";
+import bangerStamp from "/public/reading/banger.png";
 
 const queryClient = new QueryClient();
 
@@ -15,6 +17,7 @@ type Book = {
   title: string;
   author: string;
   status: "current" | "finished" | "readingList";
+  isBanger: boolean;
 };
 
 type NewBook = Omit<Book, "id">;
@@ -33,6 +36,7 @@ function ReadingContent() {
     title: "",
     author: "",
     status: "readingList",
+    isBanger: false,
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
@@ -57,7 +61,7 @@ function ReadingContent() {
       }).then((res) => res.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
-      setNewBook({ title: "", author: "", status: activeTab });
+      setNewBook({ title: "", author: "", status: activeTab, isBanger: false });
     },
   });
 
@@ -79,6 +83,26 @@ function ReadingContent() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
       setEditingBook(null);
+    },
+  });
+
+  const toggleBangerMutation = useMutation<Book, Error, Book>({
+    mutationFn: (updatedBook: Book) =>
+      fetch(`/api/books/${updatedBook.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedBook),
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to update book");
+        }
+        return res.json();
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+    },
+    onError: (error) => {
+      console.error("Error toggling banger status:", error);
     },
   });
 
@@ -123,6 +147,7 @@ function ReadingContent() {
                       form.elements.namedItem("author") as HTMLInputElement
                     ).value,
                     status: book.status,
+                    isBanger: book.isBanger,
                   });
                 }}
                 className="flex-grow flex items-center space-x-2"
@@ -152,11 +177,24 @@ function ReadingContent() {
               </form>
             ) : (
               <>
-                <div>
-                  <span className="font-semibold text-lg text-[#3c3836]">
-                    {book.title}
-                  </span>
-                  <p className="text-[#504945] mt-1 italic">by {book.author}</p>
+                <div className="flex items-center">
+                  <div>
+                    <span className="font-semibold text-lg text-[#3c3836]">
+                      {book.title}
+                    </span>
+                    <p className="text-[#504945] mt-1 italic">
+                      by {book.author}
+                    </p>
+                  </div>
+                  {book.isBanger && (
+                    <Image
+                      src={bangerStamp}
+                      alt="Banger"
+                      width={60}
+                      height={60}
+                      className="ml-4"
+                    />
+                  )}
                 </div>
                 {isLoggedIn && (
                   <div>
@@ -168,9 +206,25 @@ function ReadingContent() {
                     </button>
                     <button
                       onClick={() => deleteBookMutation.mutate(book.id)}
-                      className="px-2 py-1 bg-[#fb4934] text-[#282828] rounded hover:bg-[#cc241d]"
+                      className="px-2 py-1 bg-[#fb4934] text-[#282828] rounded hover:bg-[#cc241d] mr-2"
                     >
                       Delete
+                    </button>
+                    <button
+                      onClick={() => {
+                        const updatedBook = {
+                          ...book,
+                          isBanger: !book.isBanger,
+                        };
+                        toggleBangerMutation.mutate(updatedBook);
+                      }}
+                      className={`px-2 py-1 rounded ${
+                        book.isBanger
+                          ? "bg-[#b16286] hover:bg-[#8f3f71]"
+                          : "bg-[#689d6a] hover:bg-[#427b58]"
+                      } text-white`}
+                    >
+                      {book.isBanger ? "Remove Banger" : "Mark as Banger"}
                     </button>
                   </div>
                 )}
@@ -197,7 +251,7 @@ function ReadingContent() {
       <div className="absolute top-22 right-0 mt-2 mr-24">
         {!isLoggedIn ? (
           showLoginForm ? (
-            <div ref={loginFormRef}>
+            <div ref={loginFormRef} className="relative z-50">
               <LoginForm
                 onLogin={() => {
                   setIsLoggedIn(true);
@@ -227,20 +281,31 @@ function ReadingContent() {
           My Reading Journey
         </h1>
 
-        <div className="w-full max-w-4xl mb-8 flex justify-center">
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={`px-4 py-2 mx-2 rounded-full transition-all duration-300 ${
-                activeTab === category
-                  ? "bg-[#b57614] text-white"
-                  : "bg-[#ebdbb2] text-[#3c3836] hover:bg-[#d5c4a1]"
-              }`}
-              onClick={() => setActiveTab(category)}
-            >
-              {categoryTitles[category]}
-            </button>
-          ))}
+        <div className="w-full max-w-4xl mb-8 flex justify-center relative">
+          <div className="flex bg-[#ebdbb2] rounded-lg overflow-hidden w-full">
+            {categories.map((category, index) => (
+              <button
+                key={category}
+                className={`flex-1 px-4 py-2 transition-all duration-300 ${
+                  activeTab === category
+                    ? "bg-[#b57614] text-white"
+                    : "bg-[#ebdbb2] text-[#3c3836] hover:bg-[#d5c4a1]"
+                } ${index !== 0 ? "border-l border-[#d79921]" : ""}`}
+                onClick={() => setActiveTab(category)}
+              >
+                <span className="relative z-10">
+                  {categoryTitles[category]}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div
+            className="absolute bottom-0 left-0 h-full bg-[#b57614] transition-all duration-300"
+            style={{
+              width: `${100 / categories.length}%`,
+              transform: `translateX(${categories.indexOf(activeTab) * 100}%)`,
+            }}
+          ></div>
         </div>
 
         {isLoggedIn && (
@@ -251,7 +316,10 @@ function ReadingContent() {
             <form
               onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
-                addBookMutation.mutate({ ...newBook, status: activeTab });
+                addBookMutation.mutate({
+                  ...newBook,
+                  status: activeTab,
+                });
               }}
               className="flex flex-wrap gap-4"
             >

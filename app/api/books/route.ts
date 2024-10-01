@@ -23,6 +23,7 @@ export async function POST(request: Request) {
         title: body.title,
         author: body.author,
         status: body.status,
+        isBanger: body.isBanger,
       },
     });
     return NextResponse.json(newBook, { status: 201 });

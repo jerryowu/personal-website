@@ -35,6 +35,7 @@ export async function PUT(request: Request) {
         title: body.title,
         author: body.author,
         status: body.status,
+        isBanger: body.isBanger,
       },
     });
     return NextResponse.json(updatedBook, { status: 200 });
