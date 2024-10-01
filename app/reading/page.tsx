@@ -10,6 +10,15 @@ import { LoginForm } from "../components/LoginForm";
 
 const queryClient = new QueryClient();
 
+type Book = {
+  id: number;
+  title: string;
+  author: string;
+  status: "current" | "finished" | "readingList";
+};
+
+type NewBook = Omit<Book, "id">;
+
 export default function Reading() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -19,10 +28,8 @@ export default function Reading() {
 }
 
 function ReadingContent() {
-  const [activeTab, setActiveTab] = useState<
-    "currentlyReading" | "finished" | "readingList"
-  >("currentlyReading");
-  const [newBook, setNewBook] = useState({
+  const [activeTab, setActiveTab] = useState<Book["status"]>("current");
+  const [newBook, setNewBook] = useState<NewBook>({
     title: "",
     author: "",
     status: "readingList",
@@ -36,12 +43,12 @@ function ReadingContent() {
     data: books,
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<Book[], Error>({
     queryKey: ["books"],
     queryFn: () => fetch(`/api/books`).then((res) => res.json()),
   });
 
-  const addBookMutation = useMutation({
+  const addBookMutation = useMutation<Book, Error, NewBook>({
     mutationFn: (newBook) =>
       fetch("/api/books", {
         method: "POST",
@@ -50,11 +57,11 @@ function ReadingContent() {
       }).then((res) => res.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
-      setNewBook({ title: "", author: "", status: newBook.status });
+      setNewBook({ title: "", author: "", status: activeTab });
     },
   });
 
-  const deleteBookMutation = useMutation({
+  const deleteBookMutation = useMutation<void, Error, number>({
     mutationFn: (bookId: number) =>
       fetch(`/api/books/${bookId}`, { method: "DELETE" }).then((res) =>
         res.json()
@@ -62,13 +69,8 @@ function ReadingContent() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
   });
 
-  const editBookMutation = useMutation({
-    mutationFn: (updatedBook: {
-      id: number;
-      title: string;
-      author: string;
-      status: string;
-    }) =>
+  const editBookMutation = useMutation<Book, Error, Book>({
+    mutationFn: (updatedBook: Book) =>
       fetch(`/api/books/${updatedBook.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -96,13 +98,7 @@ function ReadingContent() {
     };
   }, []);
 
-  const BookList = ({
-    title,
-    books,
-  }: {
-    title: string;
-    books: { id: number; title: string; author: string; status: string }[];
-  }) => (
+  const BookList = ({ title, books }: { title: string; books: Book[] }) => (
     <div className="bg-gradient-to-br from-[#fbf1c7] to-[#f2e5bc] shadow-lg rounded-lg p-6 mb-8 w-full max-w-4xl mx-auto transition-all duration-300 hover:shadow-xl">
       <h2 className="text-2xl font-semibold mb-6 text-[#b57614] text-center border-b-2 border-[#d79921] pb-2">
         {title}
@@ -115,12 +111,17 @@ function ReadingContent() {
           >
             {editingBook === book.id ? (
               <form
-                onSubmit={(e) => {
+                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                   e.preventDefault();
+                  const form = e.currentTarget;
                   editBookMutation.mutate({
                     id: book.id,
-                    title: (e.target as any).title.value,
-                    author: (e.target as any).author.value,
+                    title: (
+                      form.elements.namedItem("title") as HTMLInputElement
+                    ).value,
+                    author: (
+                      form.elements.namedItem("author") as HTMLInputElement
+                    ).value,
                     status: book.status,
                   });
                 }}
@@ -182,11 +183,11 @@ function ReadingContent() {
   );
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>An error occurred: {(error as Error).message}</div>;
+  if (error) return <div>An error occurred: {error.message}</div>;
 
-  const categories = ["currentlyReading", "finished", "readingList"] as const;
-  const categoryTitles: Record<(typeof categories)[number], string> = {
-    currentlyReading: "Currently Reading",
+  const categories = ["current", "finished", "readingList"] as const;
+  const categoryTitles: Record<Book["status"], string> = {
+    current: "Current",
     finished: "Finished",
     readingList: "Reading List",
   };
@@ -244,13 +245,13 @@ function ReadingContent() {
 
         {isLoggedIn && (
           <div className="w-full max-w-4xl mb-8">
-            <h2 className="text-2xl font-semibold mb-4 text-[#b57614]">
-              Add New Book
+            <h2 className="text-2xl font-semibold mb-4 text-[#b57614] text-center">
+              Add New Book to {categoryTitles[activeTab]}
             </h2>
             <form
-              onSubmit={(e) => {
+              onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
-                addBookMutation.mutate(newBook);
+                addBookMutation.mutate({ ...newBook, status: activeTab });
               }}
               className="flex flex-wrap gap-4"
             >
@@ -274,17 +275,6 @@ function ReadingContent() {
                 className="flex-grow p-2 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] placeholder-[#7c6f64] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
                 required
               />
-              <select
-                value={newBook.status}
-                onChange={(e) =>
-                  setNewBook({ ...newBook, status: e.target.value })
-                }
-                className="p-2 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
-              >
-                <option value="readingList">Reading List</option>
-                <option value="currentlyReading">Currently Reading</option>
-                <option value="finished">Finished</option>
-              </select>
               <button
                 type="submit"
                 className="px-4 py-2 bg-[#98971a] text-white rounded hover:bg-[#79740e]"
@@ -300,7 +290,7 @@ function ReadingContent() {
         <BookList
           title={categoryTitles[activeTab]}
           books={(books || []).filter(
-            (book: { status: string }) => book.status === activeTab
+            (book: Book) => book.status === activeTab
           )}
         />
       </div>

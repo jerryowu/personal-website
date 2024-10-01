@@ -39,12 +39,12 @@ export default function Navbar() {
         </Link>
         <div className="mr-20 mt-10 flex space-x-20">
           <Link
-            href="/fun"
+            href="/news"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
-              pathname === "/fun" ? "underline scale-105" : ""
+              pathname === "/news" ? "underline scale-105" : ""
             }`}
           >
-            Fun
+            News
           </Link>
           <Link
             href="/resume"
@@ -55,20 +55,20 @@ export default function Navbar() {
             Resume
           </Link>
           <Link
+            href="/fun"
+            className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
+              pathname === "/fun" ? "underline scale-105" : ""
+            }`}
+          >
+            Fun
+          </Link>
+          <Link
             href="/reading"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
               pathname === "/reading" ? "underline scale-105" : ""
             }`}
           >
             Reading
-          </Link>
-          <Link
-            href="/build"
-            className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
-              pathname === "/build" ? "underline scale-105" : ""
-            }`}
-          >
-            Build
           </Link>
         </div>
       </div>
