@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import Image, { StaticImageData } from "next/image";
 
@@ -38,6 +38,11 @@ export default function ImageStack({ images }: ImageStackProps) {
     });
   };
 
+  const rotationClasses = useMemo(
+    () => ["rotate-0", "rotate-3", "rotate-6", "rotate-12"],
+    []
+  );
+
   return (
     <>
       {imageStack
@@ -59,8 +64,8 @@ export default function ImageStack({ images }: ImageStackProps) {
                   : "-translate-x-full rotate-[-30deg] z-[1]"
                 : `${
                     index === imageStack.length - 1
-                      ? "rotate-0"
-                      : `rotate-${[12, 3, 6][index % 3]}`
+                      ? rotationClasses[0]
+                      : rotationClasses[(index % 3) + 1]
                   } ${
                     index === imageStack.length - 1
                       ? "scale-100"
