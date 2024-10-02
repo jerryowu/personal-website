@@ -165,13 +165,11 @@ function ReadingContent() {
       const [reorderedItem] = items.splice(result.source.index, 1);
       items.splice(result.destination.index, 0, reorderedItem);
 
-      // Update the books with new indices
       const updatedBooks = items.map((book, index) => ({
         ...book,
         order: index,
       }));
 
-      // Send the updated books to the server
       reorderBooksMutation.mutate(updatedBooks);
     };
 
@@ -418,7 +416,7 @@ function ReadingContent() {
                 addBookMutation.mutate({
                   ...newBook,
                   status: activeTab,
-                  order: lowestOrder - 1, // Set the order to be one less than the current lowest order
+                  order: lowestOrder - 1,
                 });
               }}
               className="flex flex-wrap gap-4"
