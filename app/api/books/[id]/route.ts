@@ -28,19 +28,33 @@ export async function DELETE(
 
 export async function PUT(request: Request) {
   try {
-    const body = await request.json();
-    const updatedBook = await prisma.book.update({
-      where: { id: body.id },
-      data: {
-        title: body.title,
-        author: body.author,
-        status: body.status,
-        isBanger: body.isBanger,
-      },
-    });
-    return NextResponse.json(updatedBook, { status: 200 });
+    const books = await request.json();
+
+    if (Array.isArray(books)) {
+      const updatedBooks = await prisma.$transaction(
+        books.map((book) =>
+          prisma.book.update({
+            where: { id: book.id },
+            data: {
+              order: book.order,
+            },
+          })
+        )
+      );
+      return NextResponse.json(updatedBooks, { status: 200 });
+    } else {
+      const { id, ...updateData } = books;
+      const updatedBook = await prisma.book.update({
+        where: { id: parseInt(id, 10) },
+        data: updateData,
+      });
+      return NextResponse.json(updatedBook, { status: 200 });
+    }
   } catch (error) {
-    console.error("Error updating book:", error);
-    return NextResponse.json({ error: "Error updating book" }, { status: 500 });
+    console.error("Error reordering books:", error);
+    return NextResponse.json(
+      { error: "Error reordering books" },
+      { status: 500 }
+    );
   }
 }

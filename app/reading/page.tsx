@@ -9,6 +9,12 @@ import {
 import { LoginForm } from "../components/LoginForm";
 import Image from "next/image";
 import bangerStamp from "/public/reading/banger.png";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +24,7 @@ type Book = {
   author: string;
   status: "current" | "finished" | "readingList";
   isBanger: boolean;
+  order: number;
 };
 
 type NewBook = Omit<Book, "id">;
@@ -37,6 +44,7 @@ function ReadingContent() {
     author: "",
     status: "readingList",
     isBanger: false,
+    order: 0,
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
@@ -44,7 +52,7 @@ function ReadingContent() {
   const [editingBook, setEditingBook] = useState<number | null>(null);
 
   const {
-    data: books,
+    data: books = [],
     isLoading,
     error,
   } = useQuery<Book[], Error>({
@@ -61,7 +69,13 @@ function ReadingContent() {
       }).then((res) => res.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["books"] });
-      setNewBook({ title: "", author: "", status: activeTab, isBanger: false });
+      setNewBook({
+        title: "",
+        author: "",
+        status: activeTab,
+        isBanger: false,
+        order: 0,
+      });
     },
   });
 
@@ -106,6 +120,26 @@ function ReadingContent() {
     },
   });
 
+  const reorderBooksMutation = useMutation<Book[], Error, Book[]>({
+    mutationFn: (updatedBooks: Book[]) =>
+      fetch(`/api/books/reorder`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedBooks),
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to reorder books");
+        }
+        return res.json();
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+    },
+    onError: (error) => {
+      console.error("Error reordering books:", error);
+    },
+  });
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -121,120 +155,177 @@ function ReadingContent() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  const BookList = ({ title, books }: { title: string; books: Book[] }) => {
+    const onDragEnd = (result: DropResult) => {
+      if (!result.destination || !isLoggedIn) {
+        return;
+      }
 
-  const BookList = ({ title, books }: { title: string; books: Book[] }) => (
-    <div className="bg-gradient-to-br from-[#fbf1c7] to-[#f2e5bc] shadow-lg rounded-lg p-6 mb-8 w-full max-w-4xl mx-auto transition-all duration-300 hover:shadow-xl">
-      <h2 className="text-2xl font-semibold mb-6 text-[#b57614] text-center border-b-2 border-[#d79921] pb-2">
-        {title}
-      </h2>
-      <ul className="space-y-6">
-        {books.map((book) => (
-          <li
-            key={book.id}
-            className="bg-[#ebdbb2] p-4 rounded-md transition-all duration-300 hover:shadow-md hover:bg-[#d5c4a1] flex items-center justify-between"
-          >
-            {editingBook === book.id ? (
-              <form
-                onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-                  e.preventDefault();
-                  const form = e.currentTarget;
-                  editBookMutation.mutate({
-                    id: book.id,
-                    title: (
-                      form.elements.namedItem("title") as HTMLInputElement
-                    ).value,
-                    author: (
-                      form.elements.namedItem("author") as HTMLInputElement
-                    ).value,
-                    status: book.status,
-                    isBanger: book.isBanger,
-                  });
-                }}
-                className="flex-grow flex items-center space-x-2"
+      const items = Array.from(books);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+
+      // Update the books with new indices
+      const updatedBooks = items.map((book, index) => ({
+        ...book,
+        order: index,
+      }));
+
+      // Send the updated books to the server
+      reorderBooksMutation.mutate(updatedBooks);
+    };
+
+    return (
+      <div className="bg-gradient-to-br from-[#fbf1c7] to-[#f2e5bc] shadow-lg rounded-lg p-6 mb-8 w-full max-w-4xl mx-auto transition-all duration-300 hover:shadow-xl">
+        <h2 className="text-2xl font-semibold mb-6 text-[#b57614] text-center border-b-2 border-[#d79921] pb-2">
+          {title}
+        </h2>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="books">
+            {(provided) => (
+              <ul
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="space-y-6"
               >
-                <input
-                  name="title"
-                  defaultValue={book.title}
-                  className="flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
-                />
-                <input
-                  name="author"
-                  defaultValue={book.author}
-                  className="flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
-                />
-                <button
-                  type="submit"
-                  className="px-2 py-1 bg-[#98971a] text-white rounded hover:bg-[#79740e]"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={() => setEditingBook(null)}
-                  className="px-2 py-1 bg-[#d79921] text-white rounded hover:bg-[#b57614]"
-                >
-                  Cancel
-                </button>
-              </form>
-            ) : (
-              <>
-                <div className="flex items-center">
-                  <div>
-                    <span className="font-semibold text-lg text-[#3c3836]">
-                      {book.title}
-                    </span>
-                    <p className="text-[#504945] mt-1 italic">
-                      by {book.author}
-                    </p>
-                  </div>
-                  {book.isBanger && (
-                    <Image
-                      src={bangerStamp}
-                      alt="Banger"
-                      width={60}
-                      height={60}
-                      className="ml-4"
-                    />
-                  )}
-                </div>
-                {isLoggedIn && (
-                  <div>
-                    <button
-                      onClick={() => setEditingBook(book.id)}
-                      className="px-2 py-1 bg-[#d79921] text-white rounded hover:bg-[#b57614] mr-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => deleteBookMutation.mutate(book.id)}
-                      className="px-2 py-1 bg-[#fb4934] text-[#282828] rounded hover:bg-[#cc241d] mr-2"
-                    >
-                      Delete
-                    </button>
-                    <button
-                      onClick={() => {
-                        const updatedBook = {
-                          ...book,
-                          isBanger: !book.isBanger,
-                        };
-                        toggleBangerMutation.mutate(updatedBook);
-                      }}
-                      className={`px-2 py-1 rounded ${
-                        book.isBanger
-                          ? "bg-[#b16286] hover:bg-[#8f3f71]"
-                          : "bg-[#689d6a] hover:bg-[#427b58]"
-                      } text-white`}
-                    >
-                      {book.isBanger ? "Remove Banger" : "Mark as Banger"}
-                    </button>
-                  </div>
-                )}
-              </>
+                {books.map((book, index) => (
+                  <Draggable
+                    key={book.id}
+                    draggableId={book.id.toString()}
+                    index={index}
+                    isDragDisabled={!isLoggedIn}
+                  >
+                    {(provided) => (
+                      <li
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        className="bg-[#ebdbb2] p-4 rounded-md transition-all duration-300 hover:shadow-md hover:bg-[#d5c4a1] flex items-center"
+                      >
+                        {isLoggedIn && (
+                          <div
+                            {...provided.dragHandleProps}
+                            className="mr-4 text-[#928374] cursor-move text-2xl font-bold opacity-50"
+                          >
+                            ≡
+                          </div>
+                        )}
+                        {editingBook === book.id ? (
+                          <form
+                            onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                              e.preventDefault();
+                              const form = e.currentTarget;
+                              editBookMutation.mutate({
+                                ...book,
+                                title: (
+                                  form.elements.namedItem(
+                                    "title"
+                                  ) as HTMLInputElement
+                                ).value,
+                                author: (
+                                  form.elements.namedItem(
+                                    "author"
+                                  ) as HTMLInputElement
+                                ).value,
+                              });
+                            }}
+                            className="flex-grow flex items-center space-x-2"
+                          >
+                            <input
+                              name="title"
+                              defaultValue={book.title}
+                              className="flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
+                            />
+                            <input
+                              name="author"
+                              defaultValue={book.author}
+                              className="flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
+                            />
+                            <button
+                              type="submit"
+                              className="px-2 py-1 bg-[#fabd2f] text-[#282828] rounded hover:bg-[#d79921] w-20 h-12 mr-2 flex items-center justify-center"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setEditingBook(null)}
+                              className="px-2 py-1 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006] w-20 h-12 flex items-center justify-center"
+                            >
+                              Cancel
+                            </button>
+                          </form>
+                        ) : (
+                          <>
+                            <div className="flex items-center flex-grow">
+                              <div>
+                                <span className="font-semibold text-lg text-[#3c3836]">
+                                  {book.title}
+                                </span>
+                                <p className="text-[#504945] mt-1 italic">
+                                  by {book.author}
+                                </p>
+                              </div>
+                              {book.isBanger && (
+                                <Image
+                                  src={bangerStamp}
+                                  alt="Banger"
+                                  width={60}
+                                  height={60}
+                                  className="ml-4"
+                                />
+                              )}
+                            </div>
+                            {isLoggedIn && (
+                              <div className="flex items-center ml-4">
+                                <button
+                                  onClick={() => setEditingBook(book.id)}
+                                  className="px-2 py-1 bg-[#fabd2f] text-[#282828] rounded hover:bg-[#d79921] w-20 h-12 mr-2 w-16 flex items-center justify-center"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    deleteBookMutation.mutate(book.id)
+                                  }
+                                  className="px-2 py-1 bg-[#cc241d] text-white rounded hover:bg-[#cc241d] mr-2 w-20 h-12 flex items-center justify-center"
+                                >
+                                  Delete
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    const updatedBook = {
+                                      ...book,
+                                      isBanger: !book.isBanger,
+                                    };
+                                    toggleBangerMutation.mutate(updatedBook);
+                                  }}
+                                  className={`px-2 py-1 rounded ${
+                                    book.isBanger
+                                      ? "bg-[#b16286] hover:bg-[#8f3f71]"
+                                      : "bg-[#689d6a] hover:bg-[#427b58]"
+                                  } text-white w-40 h-12 flex items-center justify-center`}
+                                >
+                                  <span className="whitespace-nowrap">
+                                    {book.isBanger
+                                      ? "Remove Banger"
+                                      : "Mark as Banger"}
+                                  </span>
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </li>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </ul>
             )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+          </Droppable>
+        </DragDropContext>
+      </div>
+    );
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
@@ -316,9 +407,18 @@ function ReadingContent() {
             <form
               onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
+                const booksArray = Array.isArray(books) ? books : [];
+                const booksInActiveTab = booksArray.filter(
+                  (book) => book.status === activeTab
+                );
+                const lowestOrder =
+                  booksInActiveTab.length > 0
+                    ? Math.min(...booksInActiveTab.map((book) => book.order))
+                    : 0;
                 addBookMutation.mutate({
                   ...newBook,
                   status: activeTab,
+                  order: lowestOrder - 1, // Set the order to be one less than the current lowest order
                 });
               }}
               className="flex flex-wrap gap-4"
@@ -357,9 +457,13 @@ function ReadingContent() {
       <div className="w-full max-w-4xl space-y-8 flex flex-col items-center animate-fade-in">
         <BookList
           title={categoryTitles[activeTab]}
-          books={(books || []).filter(
-            (book: Book) => book.status === activeTab
-          )}
+          books={
+            Array.isArray(books)
+              ? books
+                  .filter((book: Book) => book.status === activeTab)
+                  .sort((a: Book, b: Book) => a.order - b.order)
+              : []
+          }
         />
       </div>
     </main>
