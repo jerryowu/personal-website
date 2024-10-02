@@ -2,7 +2,6 @@
 import { useState, useRef, useEffect } from "react";
 import {
   useQuery,
-  useMutation,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
@@ -15,6 +14,7 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
+import { useBookMutations } from "../api/books/useBookMutations";
 
 const queryClient = new QueryClient();
 
@@ -60,85 +60,13 @@ function ReadingContent() {
     queryFn: () => fetch(`/api/books`).then((res) => res.json()),
   });
 
-  const addBookMutation = useMutation<Book, Error, NewBook>({
-    mutationFn: (newBook) =>
-      fetch("/api/books", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newBook),
-      }).then((res) => res.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["books"] });
-      setNewBook({
-        title: "",
-        author: "",
-        status: activeTab,
-        isBanger: false,
-        order: 0,
-      });
-    },
-  });
-
-  const deleteBookMutation = useMutation<void, Error, number>({
-    mutationFn: (bookId: number) =>
-      fetch(`/api/books/${bookId}`, { method: "DELETE" }).then((res) =>
-        res.json()
-      ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["books"] }),
-  });
-
-  const editBookMutation = useMutation<Book, Error, Book>({
-    mutationFn: (updatedBook: Book) =>
-      fetch(`/api/books/${updatedBook.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedBook),
-      }).then((res) => res.json()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["books"] });
-      setEditingBook(null);
-    },
-  });
-
-  const toggleBangerMutation = useMutation<Book, Error, Book>({
-    mutationFn: (updatedBook: Book) =>
-      fetch(`/api/books/${updatedBook.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedBook),
-      }).then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to update book");
-        }
-        return res.json();
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["books"] });
-    },
-    onError: (error) => {
-      console.error("Error toggling banger status:", error);
-    },
-  });
-
-  const reorderBooksMutation = useMutation<Book[], Error, Book[]>({
-    mutationFn: (updatedBooks: Book[]) =>
-      fetch(`/api/books/reorder`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedBooks),
-      }).then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to reorder books");
-        }
-        return res.json();
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["books"] });
-    },
-    onError: (error) => {
-      console.error("Error reordering books:", error);
-    },
-  });
+  const {
+    addBookMutation,
+    editBookMutation,
+    deleteBookMutation,
+    toggleBangerMutation,
+    reorderBooksMutation,
+  } = useBookMutations();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -225,6 +153,7 @@ function ReadingContent() {
                                   ) as HTMLInputElement
                                 ).value,
                               });
+                              setEditingBook(null);
                             }}
                             className="flex-grow flex items-center space-x-2"
                           >
@@ -240,7 +169,7 @@ function ReadingContent() {
                             />
                             <button
                               type="submit"
-                              className="px-2 py-1 bg-[#fabd2f] text-[#282828] rounded hover:bg-[#d79921] w-20 h-12 mr-2 flex items-center justify-center"
+                              className="px-2 py-1 bg-[#fabd2f] text-[#3c3836] rounded hover:bg-[#d79921] w-20 h-12 mr-2 flex items-center justify-center"
                             >
                               Save
                             </button>
@@ -276,17 +205,9 @@ function ReadingContent() {
                               <div className="flex items-center ml-4">
                                 <button
                                   onClick={() => setEditingBook(book.id)}
-                                  className="px-2 py-1 bg-[#fabd2f] text-[#282828] rounded hover:bg-[#d79921] w-20 h-12 mr-2 w-16 flex items-center justify-center"
+                                  className="px-2 py-1 bg-[#fabd2f] text-[#3c3836] rounded hover:bg-[#d79921] w-20 h-12 mr-2 w-16 flex items-center justify-center"
                                 >
                                   Edit
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    deleteBookMutation.mutate(book.id)
-                                  }
-                                  className="px-2 py-1 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#cc241d] mr-2 w-20 h-12 flex items-center justify-center"
-                                >
-                                  Delete
                                 </button>
                                 <button
                                   onClick={() => {
@@ -300,13 +221,21 @@ function ReadingContent() {
                                     book.isBanger
                                       ? "bg-[#b16286] hover:bg-[#8f3f71]"
                                       : "bg-[#689d6a] hover:bg-[#427b58]"
-                                  } text-[#fbf1c7] w-40 h-12 flex items-center justify-center`}
+                                  } text-[#fbf1c7] w-40 h-12 flex items-center justify-center mr-2`}
                                 >
                                   <span className="whitespace-nowrap">
                                     {book.isBanger
                                       ? "Remove Banger"
                                       : "Mark as Banger"}
                                   </span>
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    deleteBookMutation.mutate(book.id)
+                                  }
+                                  className="px-2 py-1 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#cc241d] w-20 h-12 flex items-center justify-center"
+                                >
+                                  Delete
                                 </button>
                               </div>
                             )}
