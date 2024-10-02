@@ -286,7 +286,7 @@ function ReadingContent() {
                                   onClick={() =>
                                     deleteBookMutation.mutate(book.id)
                                   }
-                                  className="px-2 py-1 bg-[#cc241d] text-white rounded hover:bg-[#cc241d] mr-2 w-20 h-12 flex items-center justify-center"
+                                  className="px-2 py-1 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#cc241d] mr-2 w-20 h-12 flex items-center justify-center"
                                 >
                                   Delete
                                 </button>
@@ -302,7 +302,7 @@ function ReadingContent() {
                                     book.isBanger
                                       ? "bg-[#b16286] hover:bg-[#8f3f71]"
                                       : "bg-[#689d6a] hover:bg-[#427b58]"
-                                  } text-white w-40 h-12 flex items-center justify-center`}
+                                  } text-[#fbf1c7] w-40 h-12 flex items-center justify-center`}
                                 >
                                   <span className="whitespace-nowrap">
                                     {book.isBanger
@@ -353,7 +353,7 @@ function ReadingContent() {
           ) : (
             <button
               onClick={() => setShowLoginForm(true)}
-              className="px-4 py-2 bg-[#b57614] text-white rounded hover:bg-[#af3a03]"
+              className="px-4 py-2 bg-[#b57614] text-[#fbf1c7] rounded hover:bg-[#af3a03]"
             >
               Login
             </button>
@@ -361,7 +361,7 @@ function ReadingContent() {
         ) : (
           <button
             onClick={() => setIsLoggedIn(false)}
-            className="px-4 py-2 bg-[#cc241d] text-white rounded hover:bg-[#9d0006]"
+            className="px-4 py-2 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006]"
           >
             Logout
           </button>
@@ -379,7 +379,7 @@ function ReadingContent() {
                 key={category}
                 className={`flex-1 px-4 py-2 transition-all duration-300 ${
                   activeTab === category
-                    ? "bg-[#b57614] text-white"
+                    ? "bg-[#b57614] text-[#fbf1c7]"
                     : "bg-[#ebdbb2] text-[#3c3836] hover:bg-[#d5c4a1]"
                 } ${index !== 0 ? "border-l border-[#d79921]" : ""}`}
                 onClick={() => setActiveTab(category)}
@@ -445,7 +445,7 @@ function ReadingContent() {
               />
               <button
                 type="submit"
-                className="px-4 py-2 bg-[#98971a] text-white rounded hover:bg-[#79740e]"
+                className="px-4 py-2 bg-[#98971a] text-[#fbf1c7] rounded hover:bg-[#79740e]"
               >
                 Add Book
               </button>
