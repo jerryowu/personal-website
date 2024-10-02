@@ -24,11 +24,11 @@ export default function Fun() {
     <main className="flex h-100 flex-col items-center justify-between p-16">
       <div className="flex flex-row pb-16 w-full">
         <p className="w-1/2 pr-8 text-xl flex items-center">
-          There&apos;s something unparalleled about being immersed in nature,
+          There&apos;s something surreal about being immersed in nature,
           disconnected from technology, surrounded by fresh powder and snow
-          covered pines. The experience of carving down the mountain with
-          friends, all while enjoying a simple pocket sandwich, is truly
-          amazing.
+          covered pines. The experience of floating down the mountain with
+          friends, all while enjoying the simple pleasure of a crusty peanut
+          butter jelly sandwich, is pure tranquility.
         </p>
         <div className="w-1/2 flex justify-center">
           <div className="relative w-[400px] h-[300px]">
