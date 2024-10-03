@@ -9,12 +9,18 @@ export function LoginForm({ onLogin }: LoginFormProps) {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ username: false, password: false });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      username === process.env.NEXT_PUBLIC_LOGIN_USERNAME &&
-      password === process.env.NEXT_PUBLIC_LOGIN_PASSWORD
-    ) {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const result = await response.json();
+    if (result.success) {
       onLogin();
       setErrors({ username: false, password: false });
     } else {
