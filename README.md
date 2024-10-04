@@ -1,32 +1,35 @@
-# personal-website
+# Overview
 
-This project was created from scratch as part of the AggieWorks SWE takehome project. It is a full-stack personal website built using React, TypeScript, Next.js, and PostgreSQL. The site is hosted on Vercel and can be accessed at https://jerryowu.com/. The project was completed in approximately 1 week. If you have any comments, feedback, or suggestions, please feel free to email me at mrjerryowu@gmail.com.
+This project is a full-stack personal website built from scratch as part of the AggieWorks SWE takehome project. Yes it has a backend, more on that later. This site is built using React, TypeScript, Next.js, and PostgreSQL. It is hosted on Vercel and can be accessed at [https://jerryowu.com](https://jerryowu.com). The project was completed in approximately 1 week.
 
-# cool parts about the website
+# Cool Features
 
-## Image Stacks
+### Reading Page
 
-The stacks of images are flippable by clicking! It creates a realistic animation of flipping the image stack, and the direction of flipping is RNG.
+The backend plays a crucial role in this section. To ensure sensitive information remains secure from the client, I've implemented a login feature that authenticates users on the backend. Logging in unlocks access to more advanced features that interact with the backend. Please log in to fully explore the site's capabilities!
 
-## Reading Page
+- **Login Info**:
+  - Username: username
+  - Password: password
+- **Features**:
+  - Drag and drop functionality
+  - Mark books as "bangers"
+  - Add, edit, and delete books
 
-The reading page is probably my most favorite. Here is the login info if you want to play around:
+### Image Stacks
 
-Username: username
-Password: password
+- Flippable image stacks with realistic animation and RNG direction.
 
-My favorite features include the ability to drag and drop and mark books as bangers. You can also of course add, edit, and delete books.
+# Additional Info
 
-To start the development server, run:
+- **Contact**: If you have any comments, feedback, or suggestions, please email me at [mrjerryowu@gmail.com](mailto:mrjerryowu@gmail.com).
+- **Development Server**: To start the development server, run one of the following commands:
 
 ```bash
 npm run dev
-# or
 yarn dev
-# or
 pnpm dev
-# or
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the site.
+- **Access**: Open [http://localhost:3000](http://localhost:3000) in your browser to view the site.
