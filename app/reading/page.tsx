@@ -15,6 +15,7 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 import { useBookMutations } from "../api/books/useBookMutations";
+import { MoonLoader } from "react-spinners";
 
 const queryClient = new QueryClient();
 
@@ -254,7 +255,18 @@ function ReadingContent() {
     );
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <MoonLoader
+          color={"#8b9467"}
+          loading={isLoading}
+          size={50}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </div>
+    );
   if (error) return <div>An error occurred: {error.message}</div>;
 
   const categories = ["current", "finished", "readingList"] as const;
@@ -380,7 +392,6 @@ function ReadingContent() {
           </div>
         )}
       </div>
-
       <div className="w-full max-w-4xl space-y-8 flex flex-col items-center animate-fade-in">
         <BookList
           title={categoryTitles[activeTab]}
