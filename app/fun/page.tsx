@@ -46,8 +46,7 @@ export default function Fun() {
           Weightlifting is one of my favorite hobbies. It&apos;s a great way for
           me to unwind, and I&apos;ve made some of my closest friends at the
           gym. Rather than sharing lifting photos here, I thought I&apos;d post
-          some meal prep instead. For more, check out my lifting page on ig
-          @jerryberry.lifts
+          some meal prep instead.
         </p>
       </div>
     </main>
