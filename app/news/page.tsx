@@ -1,16 +1,16 @@
 export default function News() {
   const journeyItems = [
     {
+      title: "Created Personal Website",
+      date: "October 2024",
+      location: "Davis, California",
+      details: "This is a placeholder news event.",
+    },
+    {
       title: "Tore ACL",
       date: "April 2024",
       location: "Davis, California",
-      details: "don't buy an electric skateboard",
-    },
-    {
-      title: "Graduated highschool",
-      date: "Jun 2021",
-      location: "Sunnyvale, California",
-      details: "408",
+      details: "Don't buy an electric skateboard. Bad idea.",
     },
   ];
 
