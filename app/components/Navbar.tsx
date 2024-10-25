@@ -70,6 +70,14 @@ export default function Navbar() {
           >
             Reading
           </Link>
+          <Link
+            href="/digital-garden"
+            className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
+              pathname === "/digital-garden" ? "underline scale-105" : ""
+            }`}
+          >
+            Digital Garden
+          </Link>
         </div>
       </div>
     </div>
