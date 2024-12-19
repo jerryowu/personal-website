@@ -73,7 +73,9 @@ export default function Navbar() {
           <Link
             href="/digital-garden"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
-              pathname === "/digital-garden" ? "underline scale-105" : ""
+              pathname.startsWith("/digital-garden")
+                ? "underline scale-105"
+                : ""
             }`}
           >
             Digital Garden
