@@ -42,7 +42,7 @@ export default function Home() {
               <FaEnvelope />
             </a>
             <a
-              href="https://www.instagram.com/jerry.o.wu/"
+              href="https://www.instagram.com/jerryowu/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-4xl text-pink-600 hover:text-pink-800 transition-colors duration-300"
