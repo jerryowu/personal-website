@@ -18,6 +18,12 @@ export default function DigitalGarden() {
       PostId: "adversarial-nature",
       Date: "November 2024",
     },
+    {
+      Title: "Wealth",
+      Content: "wealth content",
+      PostId: "wealth",
+      Date: "December 2024",
+    },
   ];
 
   return (
