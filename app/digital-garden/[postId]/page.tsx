@@ -71,6 +71,7 @@ It so happens to be that hitting legs, the most painful muscle group to work, is
 
         <article className="prose prose-lg max-w-none">
           <h1 className="text-4xl font-bold mb-8">{post.Title}</h1>
+          <h1 className="text-4xl font-bold mb-8">{postId}</h1>
           <div className="text-gray-500 text-sm mb-4">{post.Date}</div>
           <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
             {post.Content}
