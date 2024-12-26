@@ -58,22 +58,25 @@ It so happens to be that hitting legs, the most painful muscle group to work, is
   };
   return (
     <>
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <Link
           href="/digital-garden"
-          className="inline-block mb-8 text-gray-600 hover:text-gray-900 transition-colors"
+          className="inline-block mb-4 sm:mb-6 lg:mb-8 text-gray-600 hover:text-gray-900 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <span className="text-2xl">←</span>
-            <span>Back to Digital Garden</span>
+            <span className="text-xl sm:text-2xl">←</span>
+            <span className="text-sm sm:text-base">Back to Digital Garden</span>
           </div>
         </Link>
 
-        <article className="prose prose-lg max-w-none">
-          <h1 className="text-4xl font-bold mb-8">{post.Title}</h1>
-          <h1 className="text-4xl font-bold mb-8">{postId}</h1>
-          <div className="text-gray-500 text-sm mb-4">{post.Date}</div>
-          <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+        <article className="prose prose-sm sm:prose lg:prose-lg max-w-none">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 lg:mb-8">
+            {post.Title}
+          </h1>
+          <div className="text-gray-500 text-xs sm:text-sm mb-2 sm:mb-4">
+            {post.Date}
+          </div>
+          <div className="text-gray-800 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
             {post.Content}
           </div>
         </article>

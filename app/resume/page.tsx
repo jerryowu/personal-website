@@ -3,7 +3,7 @@ import resumePng from "/public/Jerry Wu Resume.png";
 
 export default function Resume() {
   return (
-    <div className="flex flex-col items-center mt-[20px] pb-[50px]">
+    <div className="flex flex-col items-center mt-16 md:mt-[20px] pb-6 md:pb-[50px] px-4 md:px-0">
       <div className="flex justify-end w-full max-w-4xl mb-4">
         <div className="relative w-full max-w-4xl">
           <Image
@@ -12,17 +12,17 @@ export default function Resume() {
             width={800}
             height={1000}
             priority
-            className="w-full mb-4"
+            className="w-full mb-4 rounded shadow-lg"
           />
           <a
             href="/Jerry Wu Resume.pdf"
             download
-            className="absolute top-2 right-2 bg-[#928374] hover:bg-[#7c6f64] text-[#fbf1c7] font-bold p-2 rounded flex items-center justify-center"
+            className="absolute top-2 right-2 bg-[#928374] hover:bg-[#7c6f64] text-[#fbf1c7] font-bold p-2 md:p-3 rounded flex items-center justify-center shadow-md transition-colors duration-200"
             title="Download Resume"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
+              className="h-5 w-5 md:h-6 md:w-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

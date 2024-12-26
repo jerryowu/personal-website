@@ -10,15 +10,15 @@ export default function Home() {
   const images = [headshot, camera_photo, spikey, bread];
 
   return (
-    <main className="flex h-100 flex-col items-center justify-between p-16">
-      <div className="flex flex-row items-center justify-between w-full">
-        <div className="w-1/2 pl-20">
-          <p className="text-xl mb-6">
+    <main className="flex h-100 flex-col items-center justify-between p-4 md:p-16">
+      <div className="flex flex-col md:flex-row items-center justify-between w-full mt-8">
+        <div className="w-full md:w-1/2 px-4 md:pl-20 mb-8 md:mb-0 mt-8">
+          <p className="text-lg md:text-xl mb-6">
             Hi! I&apos;m Jerry. I&apos;m a 4th year undergraduate student
-            studying computer science at UC Davis. I am interested in full stack
-            development and UI/UX design.
+            studying computer science at UC Davis. I am interested in
+            entrepreneurship and full stack development.
           </p>
-          <div className="flex space-x-6">
+          <div className="flex justify-center md:justify-start space-x-6">
             <a
               href="https://www.linkedin.com/in/jerryowu/"
               target="_blank"
@@ -51,7 +51,7 @@ export default function Home() {
             </a>
           </div>
         </div>
-        <div className="relative w-[400px] h-[400px] mr-64">
+        <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] md:mr-48">
           <ImageStack images={images} />
         </div>
       </div>

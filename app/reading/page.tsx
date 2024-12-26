@@ -84,6 +84,7 @@ function ReadingContent() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   const BookList = ({ title, books }: { title: string; books: Book[] }) => {
     const onDragEnd = (result: DropResult) => {
       if (!result.destination || !isLoggedIn) {
@@ -103,8 +104,8 @@ function ReadingContent() {
     };
 
     return (
-      <div className="bg-gradient-to-br from-[#fbf1c7] to-[#f2e5bc] shadow-lg rounded-lg p-6 mb-8 w-full max-w-4xl mx-auto transition-all duration-300 hover:shadow-xl">
-        <h2 className="text-2xl font-semibold mb-6 text-[#b57614] text-center border-b-2 border-[#d79921] pb-2">
+      <div className="bg-gradient-to-br from-[#fbf1c7] to-[#f2e5bc] shadow-lg rounded-lg p-4 md:p-6 mb-8 w-full max-w-4xl mx-auto transition-all duration-300 hover:shadow-xl">
+        <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-[#b57614] text-center border-b-2 border-[#d79921] pb-2">
           {title}
         </h2>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -113,7 +114,7 @@ function ReadingContent() {
               <ul
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                className="space-y-6"
+                className="space-y-4 md:space-y-6"
               >
                 {books.map((book, index) => (
                   <Draggable
@@ -126,12 +127,12 @@ function ReadingContent() {
                       <li
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className="bg-[#ebdbb2] p-4 rounded-md transition-all duration-300 hover:shadow-md hover:bg-[#d5c4a1] flex items-center"
+                        className="bg-[#ebdbb2] p-3 md:p-4 rounded-md transition-all duration-300 hover:shadow-md hover:bg-[#d5c4a1] flex flex-col md:flex-row items-start md:items-center"
                       >
                         {isLoggedIn && (
                           <div
                             {...provided.dragHandleProps}
-                            className="mr-4 text-[#928374] cursor-move text-2xl font-bold opacity-50"
+                            className="mb-2 md:mb-0 md:mr-4 text-[#928374] cursor-move text-2xl font-bold opacity-50"
                           >
                             ≡
                           </div>
@@ -156,39 +157,41 @@ function ReadingContent() {
                               });
                               setEditingBook(null);
                             }}
-                            className="flex-grow flex items-center space-x-2"
+                            className="flex-grow flex flex-col md:flex-row items-start md:items-center space-y-2 md:space-y-0 md:space-x-2 w-full"
                           >
                             <input
                               name="title"
                               defaultValue={book.title}
-                              className="flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
+                              className="w-full md:w-auto flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
                             />
                             <input
                               name="author"
                               defaultValue={book.author}
-                              className="flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
+                              className="w-full md:w-auto flex-grow p-1 rounded border border-[#d79921] bg-[#fbf1c7] text-[#3c3836] focus:outline-none focus:ring-2 focus:ring-[#d79921]"
                             />
-                            <button
-                              type="submit"
-                              className="px-2 py-1 bg-[#fabd2f] text-[#3c3836] rounded hover:bg-[#d79921] w-20 h-12 mr-2 flex items-center justify-center"
-                            >
-                              Save
-                            </button>
-                            <button
-                              onClick={() => setEditingBook(null)}
-                              className="px-2 py-1 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006] w-20 h-12 flex items-center justify-center"
-                            >
-                              Cancel
-                            </button>
+                            <div className="flex space-x-2 w-full md:w-auto">
+                              <button
+                                type="submit"
+                                className="flex-1 md:flex-none px-2 py-1 bg-[#fabd2f] text-[#3c3836] rounded hover:bg-[#d79921] h-10 md:h-12 md:w-20 flex items-center justify-center"
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={() => setEditingBook(null)}
+                                className="flex-1 md:flex-none px-2 py-1 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006] h-10 md:h-12 md:w-20 flex items-center justify-center"
+                              >
+                                Cancel
+                              </button>
+                            </div>
                           </form>
                         ) : (
                           <>
-                            <div className="flex items-center flex-grow">
-                              <div>
-                                <span className="font-semibold text-lg text-[#3c3836]">
+                            <div className="flex flex-col md:flex-row items-start md:items-center flex-grow w-full">
+                              <div className="mb-2 md:mb-0">
+                                <span className="font-semibold text-base md:text-lg text-[#3c3836] block md:inline">
                                   {book.title}
                                 </span>
-                                <p className="text-[#504945] mt-1 italic">
+                                <p className="text-[#504945] mt-1 italic text-sm md:text-base">
                                   by {book.author}
                                 </p>
                               </div>
@@ -196,17 +199,17 @@ function ReadingContent() {
                                 <Image
                                   src={bangerStamp}
                                   alt="Banger"
-                                  width={60}
-                                  height={60}
-                                  className="ml-4"
+                                  width={40}
+                                  height={40}
+                                  className="ml-0 md:ml-4 mt-2 md:mt-0"
                                 />
                               )}
                             </div>
                             {isLoggedIn && (
-                              <div className="flex items-center ml-4">
+                              <div className="flex flex-wrap gap-2 mt-3 md:mt-0 md:ml-4 w-full md:w-auto">
                                 <button
                                   onClick={() => setEditingBook(book.id)}
-                                  className="px-2 py-1 bg-[#fabd2f] text-[#3c3836] rounded hover:bg-[#d79921] w-20 h-12 mr-2 w-16 flex items-center justify-center"
+                                  className="flex-1 md:flex-none px-2 py-1 bg-[#fabd2f] text-[#3c3836] rounded hover:bg-[#d79921] h-10 md:h-12 md:w-16 flex items-center justify-center text-sm md:text-base"
                                 >
                                   Edit
                                 </button>
@@ -218,11 +221,11 @@ function ReadingContent() {
                                     };
                                     toggleBangerMutation.mutate(updatedBook);
                                   }}
-                                  className={`px-2 py-1 rounded ${
+                                  className={`flex-1 md:flex-none px-2 py-1 rounded ${
                                     book.isBanger
                                       ? "bg-[#b16286] hover:bg-[#8f3f71]"
                                       : "bg-[#689d6a] hover:bg-[#427b58]"
-                                  } text-[#fbf1c7] w-40 h-12 flex items-center justify-center mr-2`}
+                                  } text-[#fbf1c7] h-10 md:h-12 md:w-40 flex items-center justify-center text-sm md:text-base`}
                                 >
                                   <span className="whitespace-nowrap">
                                     {book.isBanger
@@ -234,7 +237,7 @@ function ReadingContent() {
                                   onClick={() =>
                                     deleteBookMutation.mutate(book.id)
                                   }
-                                  className="px-2 py-1 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#cc241d] w-20 h-12 flex items-center justify-center"
+                                  className="flex-1 md:flex-none px-2 py-1 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#cc241d] h-10 md:h-12 md:w-20 flex items-center justify-center text-sm md:text-base"
                                 >
                                   Delete
                                 </button>
@@ -277,46 +280,49 @@ function ReadingContent() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-start p-16 min-h-screen bg-gradient-to-b from-[#fbf1c7] to-[#f9f5d7]">
-      <div className="absolute top-22 right-0 mt-2 mr-24">
-        {!isLoggedIn ? (
-          showLoginForm ? (
-            <div ref={loginFormRef} className="relative z-50">
-              <LoginForm
-                onLogin={() => {
-                  setIsLoggedIn(true);
-                  setShowLoginForm(false);
-                }}
-              />
-            </div>
-          ) : (
-            <button
-              onClick={() => setShowLoginForm(true)}
-              className="px-4 py-2 bg-[#b57614] text-[#fbf1c7] rounded hover:bg-[#af3a03]"
-            >
-              Login
-            </button>
-          )
-        ) : (
-          <button
-            onClick={() => setIsLoggedIn(false)}
-            className="px-4 py-2 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006]"
-          >
-            Logout
-          </button>
-        )}
-      </div>
-      <div className="w-full max-w-4xl mb-12 flex flex-col items-center relative">
-        <h1 className="text-5xl font-bold mb-12 text-[#9d0006] text-center animate-fade-in-down">
-          My Reading Journey
-        </h1>
+    <main className="flex flex-col items-center justify-start p-4 md:p-16 min-h-screen bg-gradient-to-b from-[#fbf1c7] to-[#f9f5d7]">
+      <div className="w-full max-w-4xl mb-8 md:mb-12 flex flex-col items-center relative">
+        <div className="w-full flex flex-col md:flex-row justify-between items-center mb-8">
+          <h1 className="text-3xl md:text-5xl font-bold text-[#9d0006] text-center animate-fade-in-down mb-4 md:mb-0">
+            My Reading Journey
+          </h1>
 
-        <div className="w-full max-w-4xl mb-8 flex justify-center relative">
+          <div className="md:absolute md:top-0 md:right-0">
+            {!isLoggedIn ? (
+              showLoginForm ? (
+                <div ref={loginFormRef} className="relative z-50">
+                  <LoginForm
+                    onLogin={() => {
+                      setIsLoggedIn(true);
+                      setShowLoginForm(false);
+                    }}
+                  />
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowLoginForm(true)}
+                  className="px-3 md:px-4 py-2 bg-[#b57614] text-[#fbf1c7] rounded hover:bg-[#af3a03] text-sm md:text-base"
+                >
+                  Login
+                </button>
+              )
+            ) : (
+              <button
+                onClick={() => setIsLoggedIn(false)}
+                className="px-3 md:px-4 py-2 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006] text-sm md:text-base"
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="w-full max-w-4xl mb-6 md:mb-8 flex justify-center relative">
           <div className="flex bg-[#ebdbb2] rounded-lg overflow-hidden w-full">
             {categories.map((category, index) => (
               <button
                 key={category}
-                className={`flex-1 px-4 py-2 transition-all duration-300 ${
+                className={`flex-1 px-2 md:px-4 py-2 transition-all duration-300 text-sm md:text-base ${
                   activeTab === category
                     ? "bg-[#b57614] text-[#fbf1c7]"
                     : "bg-[#ebdbb2] text-[#3c3836] hover:bg-[#d5c4a1]"
@@ -339,8 +345,8 @@ function ReadingContent() {
         </div>
 
         {isLoggedIn && (
-          <div className="w-full max-w-4xl mb-8">
-            <h2 className="text-2xl font-semibold mb-4 text-[#b57614] text-center">
+          <div className="w-full max-w-4xl mb-6 md:mb-8 px-4 md:px-0">
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-[#b57614] text-center">
               Add New Book to {categoryTitles[activeTab]}
             </h2>
             <form
@@ -360,7 +366,7 @@ function ReadingContent() {
                   order: lowestOrder - 1,
                 });
               }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-col md:flex-row gap-3 md:gap-4"
             >
               <input
                 type="text"
@@ -384,7 +390,7 @@ function ReadingContent() {
               />
               <button
                 type="submit"
-                className="px-4 py-2 bg-[#98971a] text-[#fbf1c7] rounded hover:bg-[#79740e]"
+                className="px-4 py-2 bg-[#98971a] text-[#fbf1c7] rounded hover:bg-[#79740e] text-sm md:text-base"
               >
                 Add Book
               </button>
@@ -392,7 +398,7 @@ function ReadingContent() {
           </div>
         )}
       </div>
-      <div className="w-full max-w-4xl space-y-8 flex flex-col items-center animate-fade-in">
+      <div className="w-full max-w-4xl space-y-6 md:space-y-8 flex flex-col items-center animate-fade-in px-4 md:px-0">
         <BookList
           title={categoryTitles[activeTab]}
           books={

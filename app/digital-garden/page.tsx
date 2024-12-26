@@ -27,10 +27,14 @@ export default function DigitalGarden() {
   ];
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap" }}>
+    <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 p-4 md:p-8 max-w-7xl mx-auto">
       {posts.map((post) => (
-        <Link key={post.PostId} href={`/digital-garden/${post.PostId}`}>
-          <div>
+        <Link
+          key={post.PostId}
+          href={`/digital-garden/${post.PostId}`}
+          className="w-full md:w-auto"
+        >
+          <div className="w-full">
             <ClickableBlock key={post.Title} title={post.Title} />
           </div>
         </Link>

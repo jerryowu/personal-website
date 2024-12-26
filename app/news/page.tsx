@@ -1,10 +1,10 @@
 export default function News() {
   const journeyItems = [
     {
-      title: "Created Personal Website",
-      date: "October 2024",
-      location: "Davis, California",
-      details: "This is a placeholder news event.",
+      title: "ACL Surgery",
+      date: "December 2024",
+      location: "Sunnyvale, California",
+      details: "I might be cooked",
     },
     {
       title: "Tore ACL",
