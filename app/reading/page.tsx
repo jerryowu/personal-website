@@ -188,7 +188,7 @@ function ReadingContent() {
                               )}
                             </div>
                             {isLoggedIn && (
-                              <div className="flex flex-wrap gap-2 mt-3 md:mt-0 md:ml-4 w-full md:w-auto">
+                              <div className="flex flex-wrap md:flex-nowrap gap-2 mt-3 md:mt-0 md:ml-4 w-full md:w-auto">
                                 <button
                                   onClick={() => setEditingBook(book.id)}
                                   className="flex-1 md:flex-none px-2 py-1 bg-[#fabd2f] text-[#3c3836] rounded hover:bg-[#d79921] h-10 md:h-12 md:w-16 flex items-center justify-center text-sm md:text-base"
