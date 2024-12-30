@@ -1,3 +1,4 @@
+"use client";
 import camera_photo from "/public/home/camera.jpg";
 import headshot from "/public/home/headshot.jpg";
 import spikey from "/public/home/spikey.jpg";

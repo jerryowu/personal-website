@@ -1,11 +1,10 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import {
   useQuery,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { LoginForm } from "../components/LoginForm";
 import Image from "next/image";
 import bangerStamp from "/public/reading/banger.png";
 import {
@@ -16,6 +15,7 @@ import {
 } from "@hello-pangea/dnd";
 import { useBookMutations } from "../api/books/useBookMutations";
 import { MoonLoader } from "react-spinners";
+import { useLogin } from "../loginContext";
 
 const queryClient = new QueryClient();
 
@@ -47,10 +47,8 @@ function ReadingContent() {
     isBanger: false,
     order: 0,
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLoginForm, setShowLoginForm] = useState(false);
-  const loginFormRef = useRef<HTMLDivElement>(null);
   const [editingBook, setEditingBook] = useState<number | null>(null);
+  const { isLoggedIn } = useLogin();
 
   const {
     data: books = [],
@@ -68,22 +66,6 @@ function ReadingContent() {
     toggleBangerMutation,
     reorderBooksMutation,
   } = useBookMutations();
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        loginFormRef.current &&
-        !loginFormRef.current.contains(event.target as Node)
-      ) {
-        setShowLoginForm(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const BookList = ({ title, books }: { title: string; books: Book[] }) => {
     const onDragEnd = (result: DropResult) => {
@@ -282,40 +264,9 @@ function ReadingContent() {
   return (
     <main className="flex flex-col items-center justify-start p-4 md:p-16 min-h-screen bg-gradient-to-b from-[#fbf1c7] to-[#f9f5d7]">
       <div className="w-full max-w-4xl mb-8 md:mb-12 flex flex-col items-center relative">
-        <div className="w-full flex flex-col md:flex-row justify-between items-center mb-8">
-          <h1 className="text-3xl md:text-5xl font-bold text-[#9d0006] text-center animate-fade-in-down mb-4 md:mb-0">
-            My Reading Journey
-          </h1>
-
-          <div className="md:absolute md:top-0 md:right-0">
-            {!isLoggedIn ? (
-              showLoginForm ? (
-                <div ref={loginFormRef} className="relative z-50">
-                  <LoginForm
-                    onLogin={() => {
-                      setIsLoggedIn(true);
-                      setShowLoginForm(false);
-                    }}
-                  />
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowLoginForm(true)}
-                  className="px-3 md:px-4 py-2 bg-[#b57614] text-[#fbf1c7] rounded hover:bg-[#af3a03] text-sm md:text-base"
-                >
-                  Login
-                </button>
-              )
-            ) : (
-              <button
-                onClick={() => setIsLoggedIn(false)}
-                className="px-3 md:px-4 py-2 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006] text-sm md:text-base"
-              >
-                Logout
-              </button>
-            )}
-          </div>
-        </div>
+        <h1 className="text-3xl md:text-5xl font-bold text-[#9d0006] text-center animate-fade-in-down mb-8 md:mb-16">
+          My Reading Journey
+        </h1>
 
         <div className="w-full max-w-4xl mb-6 md:mb-8 flex justify-center relative">
           <div className="flex bg-[#ebdbb2] rounded-lg overflow-hidden w-full">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { LoginForm } from "./LoginForm";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -82,7 +83,7 @@ export default function Navbar() {
           >
             Reading
           </Link>
-          {/* <Link
+          <Link
             href="/digital-garden"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
               pathname.startsWith("/digital-garden")
@@ -91,10 +92,10 @@ export default function Navbar() {
             }`}
           >
             Digital Garden
-          </Link> */}
+          </Link>
+          <LoginForm />
         </div>
       </div>
-
       {/* Mobile menu */}
       <div
         className={`md:hidden transition-all duration-300 ${
@@ -104,6 +105,7 @@ export default function Navbar() {
         } ${scrolled ? "bg-[#f2e5bc]" : "bg-[#fbf1c7]"}`}
       >
         <div className="flex flex-col items-center space-y-4 py-4">
+          <LoginForm />
           <Link
             href="/news"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
@@ -140,7 +142,7 @@ export default function Navbar() {
           >
             Reading
           </Link>
-          {/* <Link
+          <Link
             href="/digital-garden"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
               pathname.startsWith("/digital-garden")
@@ -150,7 +152,7 @@ export default function Navbar() {
             onClick={() => setIsMenuOpen(false)}
           >
             Digital Garden
-          </Link> */}
+          </Link>
         </div>
       </div>
     </div>
