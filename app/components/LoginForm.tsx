@@ -58,22 +58,22 @@ export function LoginForm() {
   return (
     <>
       {!isLoggedIn ? (
-        <div>
-          <div ref={loginButtonRef}>
+        <div className="relative">
+          <div ref={loginButtonRef} className="flex justify-end">
             <button
               onClick={() => setShowLoginForm(!showLoginForm)}
-              className="w-20 px-3 md:px-4 py-2 bg-[#b57614] text-[#fbf1c7] rounded hover:bg-[#af3a03] text-sm md:text-base flex items-center justify-center"
+              className="w-24 h-10 px-3 md:px-4 bg-[#b57614] text-[#fbf1c7] rounded hover:bg-[#af3a03] text-sm md:text-base flex items-center justify-center"
             >
               Login
             </button>
           </div>
 
           {showLoginForm && (
-            <div ref={loginFormRef} className="relative z-50">
-              <div className="md:absolute md:top-8 md:right-0">
+            <div ref={loginFormRef} className="absolute right-0 z-50 mt-2">
+              <div className="w-80">
                 <form
                   onSubmit={handleLogin}
-                  className="bg-[#ebdbb2] shadow-md rounded p-6 w-80"
+                  className="bg-[#ebdbb2] shadow-md rounded p-6"
                 >
                   <div className="mb-4">
                     <input
@@ -124,7 +124,7 @@ export function LoginForm() {
             setUsername("");
             setPassword("");
           }}
-          className="w-20 px-3 md:px-4 py-2 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006] text-sm md:text-base flex items-center justify-center"
+          className="w-24 h-10 px-3 md:px-4 bg-[#cc241d] text-[#fbf1c7] rounded hover:bg-[#9d0006] text-sm md:text-base flex items-center justify-center"
         >
           Logout
         </button>

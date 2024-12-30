@@ -41,13 +41,16 @@ export default function Navbar() {
           Jerry Wu
         </Link>
 
-        {/* Mobile menu button */}
-        <button
-          className="md:hidden mr-4 mt-4 p-2 text-2xl"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <FaTimes /> : <FaBars />}
-        </button>
+        {/* Mobile menu button and login */}
+        <div className="md:hidden flex items-center mt-4 mr-4 space-x-4">
+          <button
+            className="p-2 text-2xl"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+          <LoginForm />
+        </div>
 
         {/* Desktop menu */}
         <div className="hidden md:flex mr-20 mt-10 space-x-20">
@@ -105,7 +108,6 @@ export default function Navbar() {
         } ${scrolled ? "bg-[#f2e5bc]" : "bg-[#fbf1c7]"}`}
       >
         <div className="flex flex-col items-center space-y-4 py-4">
-          <LoginForm />
           <Link
             href="/news"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
