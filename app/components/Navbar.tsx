@@ -62,14 +62,24 @@ export default function Navbar() {
           >
             News
           </Link>
-          <Link
+          {/* <Link
             href="/resume"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
               pathname === "/resume" ? "underline scale-105" : ""
             }`}
+            onClick={() => setIsMenuOpen(false)}
           >
             Resume
-          </Link>
+          </Link> */}
+
+          <a
+            href="https://en.wikipedia.org/wiki/Stalking"
+            rel="noopener noreferrer"
+            className={`text-lg p-1 transition-all hover:scale-105 hover:underline`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Resume
+          </a>
           <Link
             href="/fun"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
