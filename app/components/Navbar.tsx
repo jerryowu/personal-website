@@ -96,7 +96,7 @@ export default function Navbar() {
           >
             Reading
           </Link>
-          <Link
+          {/* <Link
             href="/digital-garden"
             className={`text-lg p-1 transition-all hover:scale-105 hover:underline ${
               pathname.startsWith("/digital-garden")
@@ -105,7 +105,7 @@ export default function Navbar() {
             }`}
           >
             Digital Garden
-          </Link>
+          </Link> */}
           <LoginForm />
         </div>
       </div>
