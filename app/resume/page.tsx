@@ -1,5 +1,5 @@
-import Image from "next/image";
-import resumePng from "/public/Jerry Wu Resume.png";
+// import Image from "next/image";
+// import resumePng from "/public/Jerry Wu Resume.png";
 
 export default function Resume() {
   return (

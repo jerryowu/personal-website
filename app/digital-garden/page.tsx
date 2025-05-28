@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import ClickableBlock from "./ClickableBlock";
-import { Post } from "../types/types";
+// import Link from "next/link";
+// import ClickableBlock from "./ClickableBlock";
+// import { Post } from "../types/types";
 
 export default function DigitalGarden() {
   // const posts: Post[] = [
