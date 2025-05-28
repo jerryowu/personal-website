@@ -29,7 +29,7 @@ export default function Home() {
               <FaLinkedin />
             </a>
             <a
-              href="https://github.com/jerrywusa/"
+              href="https://github.com/jerryowu/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-4xl text-gray-800 hover:text-gray-600 transition-colors duration-300"
